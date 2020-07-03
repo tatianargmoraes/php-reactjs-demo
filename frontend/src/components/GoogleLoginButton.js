@@ -8,7 +8,7 @@ function GoogleLoginButton() {
             const googleAuthComponent = window.gapi.auth2.getAuthInstance();
             if (!googleAuthComponent) {
                 const params = {
-                    client_id: '<YOUR CLIENT ID HERE>',
+                    client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
                     access_type: 'offline'
                 };
                 window.gapi.auth2.init(params).then(
