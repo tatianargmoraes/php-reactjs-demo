@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 function GoogleLoginButton() {
     const [authLoaded, setAuthLoaded] = useState(false);
@@ -42,9 +43,18 @@ function GoogleLoginButton() {
 
     const redirectToLogin = function () {
         const googleAuthComponent = window.gapi.auth2.getAuthInstance();
-        googleAuthComponent.grantOfflineAccess().then(
+        googleAuthComponent.grantOfflineAccess()
+        .then(
             response => {
-                console.log('Google auth send a code back:', response);
+                const { code } = response;
+                const headers = {'X-Requested-With': 'XMLHttpRequest'};
+                axios.post('http://localhost:3080/api/complete-auth', { code }, { headers })
+                    .then(function (response) {
+                        console.log(response);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
             },
             error => console.log('Something went wrong when Google auth was invoked!', error)
         )
