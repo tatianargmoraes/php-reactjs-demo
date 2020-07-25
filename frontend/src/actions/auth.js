@@ -1,5 +1,6 @@
 import * as type from './actionTypes';
 import { BLANK_USER } from '../reducers/initialState';
+import { authenticateWithAutorizationCode } from '../helpers/localApi';
 
 export const startAuthentication = () => {
     return {
@@ -31,10 +32,25 @@ export const comunicateAuthenticationError = (errorMessage) => {
 }
 
 export const doAuthentication = () => {
-    // backend should be called here
-    /*
-     * return function (dispatch, getState) {
-     * 
-     * }
-     */
+    return function (dispatch) {
+        dispatch(startAuthentication());
+
+        getAuthorizationCode().then(
+            response => {
+                const { code } = response;
+                authenticateWithAutorizationCode(code, onAuthSuccess, onAuthFail)
+                .then(response => {
+                    const { email, name } = response;
+                    dispatch(finalizeAuthentication(name, email));
+                })
+                .catch(error => {
+                    const { message } = error;
+                    dispatch(comunicateAuthenticationError(message));
+                });
+            }
+        ).catch(error => {
+            console.log('error getting code', error);
+            dispatch(comunicateAuthenticationError('unknown error'));
+        });
+    }
 }

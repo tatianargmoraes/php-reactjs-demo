@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { loadAndInitializeGoogleAuthApi, getAuthorizationCode } from '../helpers/googleApi';
-import { authenticateWithAutorizationCode } from '../helpers/localApi';
+import { doAuthentication } from '../actions/auth';
 
 function GoogleLoginButton() {
     const [authLoaded, setAuthLoaded] = useState(false);
@@ -16,13 +16,7 @@ function GoogleLoginButton() {
     }, []);
 
     const redirectToLogin = function () {
-        getAuthorizationCode().then(
-            response => {
-                const { code } = response;
-                authenticateWithAutorizationCode(code);
-            },
-            error => console.log('Something went wrong when Google auth was invoked!', error)
-        )
+        doAuthentication();
     };
 
     const button = authLoaded ? <button onClick={redirectToLogin}>Log in with Google</button> : null;

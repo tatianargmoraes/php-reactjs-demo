@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Google_Client;
 use Google_Service_Oauth2;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Cookie;
 use Throwable;
 
@@ -43,12 +44,18 @@ class AuthController extends Controller
                     $responseCookie = Cookie::make('account_token', $token, $expiresIn, '/', null, true, true);
 
                     return response()->json($payload)->cookie($responseCookie);
-                
+            
                 } else {
-                    // example: {error: "redirect_uri_mismatch", error_description: "Bad Request"}
+                    Log::error('Error object received from Google Auth API', $tokenData['error']);
+
                     return response('Error executing authentication process', 500);
                 }
             } catch (Throwable $error) {
+                Log::error('Unexpected error in authentication process', [
+                    'throwable_message' => $error->getMessage(),
+                    'stack_trace' => $error->getTraceAsString(),
+                ]);
+
                 return response('Unexpected error in authentication process', 500);
             }
         }
