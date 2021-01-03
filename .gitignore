@@ -11,9 +11,9 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
+/.vscode
 
-#frontend
-# dependencies
+# frontend dependencies
 /frontend/node_modules
 /frontend/.pnp
 /frontend.pnp.js

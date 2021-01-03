@@ -7,7 +7,10 @@ services:
             context: ./docker
             dockerfile: Dockerfile
         image: php-backend-image
+        environment: 
+            XDEBUG_CONFIG: "mode=debug client_host=host.docker.internal client_port=9000"
         volumes:
             - "D:/workspace/php-plus-react-app:/var/www/html"
         ports: 
             - "8888:80"
+            - "9000:9000"

@@ -1,1 +1,0 @@
-export { doAuthentication } from './auth';

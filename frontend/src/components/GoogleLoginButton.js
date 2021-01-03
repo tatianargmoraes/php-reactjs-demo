@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { loadAndInitializeGoogleAuthApi, getAuthorizationCode } from '../helpers/googleApi';
-import { doAuthentication } from '../actions/auth';
+import { connect } from 'react-redux';
+import { loadAndInitializeGoogleAuthApi } from '../helpers/googleApi';
+import { triggerAuthenticationProcess } from '../actions/auth';
 
-function GoogleLoginButton() {
+function GoogleLoginButton(props) {
     const [authLoaded, setAuthLoaded] = useState(false);
 
     useEffect(() => {
@@ -15,13 +16,11 @@ function GoogleLoginButton() {
         loadAndInitializeGoogleAuthApi(onSuccess, onError);
     }, []);
 
-    const redirectToLogin = function () {
-        doAuthentication();
-    };
-
-    const button = authLoaded ? <button onClick={redirectToLogin}>Log in with Google</button> : null;
-
-    return button;
+    return authLoaded && <button onClick={props.doAuthentication}>Log in with Google</button>;
 }
 
-export default GoogleLoginButton;
+const mapDispatchToProps = dispatch => ({
+    doAuthentication: () => dispatch(triggerAuthenticationProcess()),
+});
+
+export default connect(null, mapDispatchToProps)(GoogleLoginButton);
